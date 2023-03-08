@@ -14,6 +14,7 @@
             include_once 'controllers/classController.php';
             break;
         case 'student':
+            include_once 'controllers/studentController.php';
             break;
     }
 ?>

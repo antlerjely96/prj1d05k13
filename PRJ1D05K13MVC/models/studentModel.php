@@ -2,10 +2,31 @@
 //function Lấy dữ liệu từ DB
     function indexStudent(){
         include_once 'connect/open.php';
-        $sql = "SELECT students.*, classes.name AS class_name FROM students INNER JOIN classes ON classes.id = students.class_id";
+        $search = '';
+        if(isset($_POST['search'])){
+            $search = $_POST['search'];
+        }
+        $page = 1;
+        if(isset($_POST['page'])){
+            $page = $_POST['page'];
+        }
+        $recordOnePage = 3;
+//        Tong so ban ghi
+        $sqlCountRecord = "SELECT COUNT(*) AS count_record FROM students WHERE students.name LIKE '%$search%'";
+        $countRecords = mysqli_query($connect, $sqlCountRecord);
+        foreach ($countRecords as $each){
+            $countRecord = $each['count_record'];
+        }
+        $countPage = ceil($countRecord / $recordOnePage);
+        $start = ($page - 1) * $recordOnePage;
+        $sql = "SELECT students.*, classes.name AS class_name FROM students INNER JOIN classes ON classes.id = students.class_id WHERE students.name LIKE '%$search%' LIMIT $start, $recordOnePage";
         $students = mysqli_query($connect, $sql);
         include_once 'connect/close.php';
-        return $students;
+        $array = array();
+        $array['search'] = $search;
+        $array['students'] = $students;
+        $array['page'] = $countPage;
+        return $array;
     }
     function createStudent(){
         include_once 'connect/open.php';
@@ -63,7 +84,7 @@
     switch ($action){
         case '':
 //            Lấy dữ liệu từ DB
-            $students = indexStudent();
+            $array = indexStudent();
             break;
         case 'create':
             $classes = createStudent();

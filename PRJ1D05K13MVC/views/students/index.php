@@ -8,6 +8,9 @@
     <title>Student list</title>
 </head>
 <body>
+    <form method="post" action="index.php?controller=student">
+        Search: <input type="text" name="search" value="<?= $array['search'] ?>"> <button>search</button>
+    </form>
     <a href="index.php?controller=student&action=create">Add a student</a>
     <table border="1px" cellpadding="0" cellspacing="0" width="100%">
         <tr>
@@ -22,7 +25,7 @@
             <th></th>
         </tr>
         <?php
-            foreach ($students as $student){
+            foreach ($array['students'] as $student){
         ?>
             <tr>
                 <td>
@@ -63,5 +66,18 @@
             }
         ?>
     </table>
+    <?php
+        for($i = 1; $i <= $array['page']; $i++){
+    ?>
+        <form style="display: inline-block" method="post" action="index.php?controller=student">
+            <input type="hidden" name="search" value="<?= $array['search'] ?>">
+            <input type="hidden" name="page" value="<?= $i ?>">
+            <button>
+                <?= $i ?>
+            </button>
+        </form>
+    <?php
+        }
+    ?>
 </body>
 </html>
